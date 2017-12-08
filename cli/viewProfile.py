@@ -44,8 +44,36 @@ def main_profile(own, viewing):
                   + util.xstr(row[1]) + "\nYear-of-Graduation: " + util.xstr(row[2])
                   + "\nEmail: " + util.xstr(row[3]) + "\nPhone: " + util.xstr(row[4]))
             row = result.fetchone()
+        # Check for connection update?
         if own != viewing:
-            return
+            is_found = False
+            cursor.callproc("check_connection", [own, viewing, is_found])
+            if is_found:
+                while True:
+                    connection_option = raw_input("Would you like to remove" + viewing + " as a connection? (y/n)\n")
+                    if connection_option == 'y':
+                        cursor.callproc("add_connection", [own, viewing])
+                        cnx.commit()
+                        print("Connection removed")
+                        break
+                    elif connection_option == 'n':
+                        print("Connection not removed")
+                        break
+                    else:
+                        print("Command not recognized")
+            else:
+                while True:
+                    connection_option = raw_input("Would you like to add " + viewing + "as a connection? (y/n)\n")
+                    if connection_option == 'y':
+                        cursor.callproc("drop_connection", [own, viewing])
+                        cnx.commit()
+                        print("Connection added")
+                        break
+                    elif connection_option == 'n':
+                        print("Connection not added")
+                        break
+                    else:
+                        print("Command not recognized")
         # is the user's profile they can edit
         while True:
             print("Go back with 'back' or edit profile with"
@@ -216,4 +244,70 @@ def study_abroad(own, viewing):
 
 
 def research(own, viewing):
-    print("research")
+    print("---------------Co-ops-----------------")
+    # Add a co-op
+    if own == viewing:
+        while True:
+            add_co_op = raw_input("Add a co-op (y/n):\n")
+            if add_co_op == 'n':
+                break
+            elif add_co_op == 'y':
+                start = raw_input("Enter a start date yyyy-mm-dd:\n")
+                end = raw_input("Enter an end date yyyy-mm-dd:\n")
+                comp = raw_input("Enter a company:\n")
+                about = raw_input("Enter a descrpition of the co-op")
+                cursor.callproc("add_co_op", [viewing, start, end, comp, about])
+                cnx.commit()
+            else:
+                print("Valid options are y or n")
+    # Go through all co-ops
+    print("-----------Viewing Co-ops------------")
+    cursor.callproc("get_co_ops", [viewing])
+    for result in cursor.stored_results():
+        row = result.fetchone()
+        if row is None:
+            print("There are no co-ops for " + viewing + ".")
+            return
+        while row is not None:
+            print("----------------CO-OP------------------")
+            print("start: " + util.xstr(row[0]) + "\nend: " + util.xstr(row[1])
+                  + "\ncompany: " + util.xstr(row[2]) + "\ndescription: " + util.xstr(row[3]))
+
+            # Change a co-op if own account
+            if own == viewing:
+                print("You can edit this co-op with the name of the field multiple fields can be changed,"
+                      " 'delete' it, go to the next co-op with 'next', or go 'back'")
+                old_time = row[0]
+                changed = False
+                while True:
+                    option = raw_input("Enter a command")
+                    if (option == 'back') or (option == 'next'):
+                        if changed:
+                            cursor.callproc("del_co_op", [viewing, old_time])
+                            cnx.commit()
+                            cursor.callproc("add_co_op", [viewing, row[0], row[1], row[2], row[3]])
+                            cnx.commit()
+                        if option == 'back':
+                            return
+                        break
+                    elif option == 'delete':
+                        cursor.callproc("del_co_op", [viewing, row[0]])
+                        cnx.commit()
+                        break
+                    elif option == 'start':
+                        changed = True
+                        row[0] = raw_input("Enter the new start date yyyy-mm-dd:\n")
+                    elif option == 'end':
+                        changed = True
+                        row[1] = raw_input("Enter the new end date yyyy-mm-dd:\n")
+                    elif option == "company":
+                        changed = True
+                        row[2] = raw_input("Enter the company name:\n")
+                    elif option == "dectription":
+                        changed = True
+                        row[3] = raw_input("Enter the description:\n")
+                    else:
+                        print("Command not recognized")
+                row = result.fetchone()
+        print("There are no other Co-ops")
+        return
