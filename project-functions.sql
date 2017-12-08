@@ -27,7 +27,7 @@ BEGIN
 
 DELETE FROM connections
 WHERE user_id = owner AND connected = removed;
-
+new_user
 END //
 
 -- gives a users favorites
@@ -163,21 +163,22 @@ END IF;
 END//
 
 -- create new user, gives true if user is sucessfully created
-CREATE PROCEDURE new_user
-(
-user_id varchar(30),
-pass varchar(45)
+CREATE PROCEDURE `new_user`(
+IN user_id varchar(30),
+IN pass varchar(45),
+IN full_name varchar(45),
+OUT is_success boolean
 )
 BEGIN
 IF ((select count(username) from users where username = user_id) = 0)
 THEN
-INSERT INTO users (username, password)
-VALUES (user_id, pass);
-SELECT TRUE;
-ELSE SELECT FALSE;
+INSERT INTO users (username, password, real_Name)
+VALUES (user_id, pass, full_name);
+SET is_success = TRUE;
+ELSE SET is_success = FALSE;
 END IF;
 
-END //
+END//
 
 
 -- delete account
@@ -188,19 +189,18 @@ user_id varchar(30)
 BEGIN
 
 DELETE FROM users WHERE user_id = username;
-
 END // 
 
 -- remove the associated info
 CREATE TRIGGER del_user_info  AFTER DELETE ON users
 FOR EACH ROW
 BEGIN
-DELETE FROM conenctions WHERE OLD.username = owner OR connected = OLD.username;
+DELETE FROM connections WHERE OLD.username = owner OR connected = OLD.username;
 DELETE FROM co_ops WHERE OLD.username = user_username;
 DELETE FROM course WHERE OLD.username = user_username;
 DELETE FROM tag_user WHERE OLD.username = user_username;
 DELETE FROM research WHERE OLD.username = user_username;
-DELETE FROM major WHERE OLD.username = user_username;
+DELETE FROM major WHERE OLD.username = user_username;search_user_tag
 DELETE FROM minor WHERE OLD.username = user_username;
 DELETE FROM study_abroad WHERE OLD.username = user_username;
 DELETE FROM group_users WHERE OLD.username = user_username;
@@ -252,7 +252,7 @@ user_id varchar(30)
 )
 BEGIN
 
-SELECT Name, professor, semester 
+SELECT name, professor, semester 
 FROM course 
 WHERE user_id = courses.user_username;
 
@@ -480,7 +480,7 @@ num int
 BEGIN
 
 UPDATE users 
-SET Name = disp_name, Description = descr, gradYear = grad, Picture = pic,
+SET real_name = disp_name, Description = descr, gradYear = grad, Picture = pic,
  email = mail, phome = num
  WHERE username = user_id;
  
@@ -562,7 +562,7 @@ tag varchar(45)
 )
 BEGIN
 
-SELECT *
+SELECT username, real_name
 FROM users u JOIN tag_user  t ON (u.username = t.users_username)
 WHERE t.name LIKE concat("%", tag, "%")
 ORDER BY t.name / tag;
@@ -583,3 +583,13 @@ WHERE t.name LIKE concat("%", tag, "%")
 ORDER BY t.name / tag;
 
 END //
+
+CREATE PROCEDURE view_user(
+user_id varchar(30)
+)
+BEGIN
+ SELECT user_id, real_name, Description, gradYear,email, phone
+ FROM users
+ WHERE username = user_id;
+ 
+ END //
