@@ -10,7 +10,7 @@ import groups
 def landing(user):
     print("------------------Home------------------")
     print("Options\n1.Search Users\n2. View/Edit Profile\n3. View/Remove Connections\n"
-          + "4. View Groups\n5. Search Groups\n6. Logout\n7. Delete Account")
+          + "4. View Your Groups\n5. Search Groups\n6. Logout\n7. Delete Account")
     while True:
         option = raw_input("Please enter an option (e.g. 1):\n")
         if option == "1":
