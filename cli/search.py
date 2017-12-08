@@ -1,8 +1,10 @@
 from mysql.connector import MySQLConnection, Error
 import home
+import viewProfile
 
 cnx = MySQLConnection(user='project', password='project', database='project')
 cursor = cnx.cursor()
+
 
 # Search for accounts
 def search_users(user):
@@ -20,6 +22,7 @@ def search_users(user):
                 row = result.fetchone()
             print("There are no additional results")
             print("------------------------------------------------")
+            break
     while True:
         option = raw_input("View a profile with: 'view-user Username', "
                            + "search again with 'search-users', or go back to home with 'home'\n")
@@ -29,6 +32,6 @@ def search_users(user):
         elif option == "search-users":
             return search_users(user)
         elif split[0] == "view-user":
-            view_other_user(split[1])
+            viewProfile.view_profile(user, split[1])
         else:
             print("Command not recognized")

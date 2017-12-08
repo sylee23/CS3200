@@ -1,10 +1,4 @@
-from mysql.connector import MySQLConnection, Error
 import login
-
-cnx = MySQLConnection(user='project', password='project', database='project')
-cursor = cnx.cursor()
-
-
 
 # main function
 def main():

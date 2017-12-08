@@ -74,6 +74,7 @@ def main_profile(own, viewing):
                         break
                     else:
                         print("Command not recognized")
+            return
         # is the user's profile they can edit
         while True:
             print("Go back with 'back' or edit profile with"
@@ -83,6 +84,9 @@ def main_profile(own, viewing):
             if option == "back":
                 return
             elif split[0] == "edit":
+                if split[2] == "":
+                    print("Need a new value")
+                    continue
                 if split[1] == "name":
                     cursor.execute("UPDATE users SET real_name=%s WHERE username=%s", (split[2], own))
                 elif split[1] == "description":
@@ -116,7 +120,7 @@ def co_ops(own, viewing):
                 start = raw_input("Enter a start date yyyy-mm-dd:\n")
                 end = raw_input("Enter an end date yyyy-mm-dd:\n")
                 comp = raw_input("Enter a company:\n")
-                about = raw_input("Enter a descrpition of the co-op")
+                about = raw_input("Enter a descrpition of the co-op:\n")
                 cursor.callproc("add_co_op", [viewing, start, end, comp, about])
                 cnx.commit()
             else:
@@ -139,6 +143,10 @@ def co_ops(own, viewing):
                 print("You can edit this co-op with the name of the field multiple fields can be changed,"
                       " 'delete' it, go to the next co-op with 'next', or go 'back'")
                 old_time = row[0]
+                start = row[0]
+                end = row[1]
+                company = row[2]
+                desc = row[3]
                 changed = False
                 while True:
                     option = raw_input("Enter a command")
@@ -146,27 +154,27 @@ def co_ops(own, viewing):
                         if changed:
                             cursor.callproc("del_co_op", [viewing, old_time])
                             cnx.commit()
-                            cursor.callproc("add_co_op", [viewing, row[0], row[1], row[2], row[3]])
+                            cursor.callproc("add_co_op", [viewing, start, end, company, desc])
                             cnx.commit()
                         if option == 'back':
                             return
                         break
                     elif option == 'delete':
-                        cursor.callproc("del_co_op", [viewing, row[0]])
+                        cursor.callproc("del_co_op", [viewing, old_time])
                         cnx.commit()
                         break
                     elif option == 'start':
                         changed = True
-                        row[0] = raw_input("Enter the new start date yyyy-mm-dd:\n")
+                        start = raw_input("Enter the new start date yyyy-mm-dd:\n")
                     elif option == 'end':
                         changed = True
-                        row[1] = raw_input("Enter the new end date yyyy-mm-dd:\n")
+                        end = raw_input("Enter the new end date yyyy-mm-dd:\n")
                     elif option == "company":
                         changed = True
-                        row[2] = raw_input("Enter the company name:\n")
-                    elif option == "dectription":
+                        company = raw_input("Enter the company name:\n")
+                    elif option == "description":
                         changed = True
-                        row[3] = raw_input("Enter the description:\n")
+                        desc = raw_input("Enter the description:\n")
                     else:
                         print("Command not recognized")
                 row = result.fetchone()
@@ -186,7 +194,7 @@ def courses(own, viewing):
                 sem = raw_input("Enter a semester start date yyyy-mm-dd:\n")
                 title = raw_input("Enter a course name:\n")
                 prof = raw_input("Enter a professor's name:\n")
-                cursor.callproc("add_co_op", [viewing, title, sem, prof])
+                cursor.callproc("add_course", [viewing, title, sem, prof])
                 cnx.commit()
             else:
                 print("Valid options are y or n")
@@ -208,30 +216,33 @@ def courses(own, viewing):
                 print("You can edit this course with the name of the field multiple fields can be changed,"
                       " 'delete' it, go to the next course with 'next', or go 'back'")
                 changed = False
+                sem = row[3]
+                name = row[1]
+                prof = row[2]
                 while True:
                     option = raw_input("Enter a command")
                     if (option == 'back') or (option == 'next'):
                         if changed:
-                            cursor.callproc("del_course", [row[0]])
+                            cursor.callproc("del_courses", [row[0]])
                             cnx.commit()
-                            cursor.callproc("add_course", [viewing, row[1], row[3], row[2]])
+                            cursor.callproc("add_course", [viewing, name, sem, prof])
                             cnx.commit()
                         if option == 'back':
                             return
                         break
                     elif option == 'delete':
-                        cursor.callproc("del_course", [row[0]])
+                        cursor.callproc("del_courses", [row[0]])
                         cnx.commit()
                         break
                     elif option == 'semester':
                         changed = True
-                        row[3] = raw_input("Enter the new semester start date yyyy-mm-dd:\n")
+                        sem = raw_input("Enter the new semester start date yyyy-mm-dd:\n")
                     elif option == "course-name":
                         changed = True
-                        row[1] = raw_input("Enter the course name:\n")
+                        name = raw_input("Enter the course name:\n")
                     elif option == "professor":
                         changed = True
-                        row[3] = raw_input("Enter the proffessor's name:\n")
+                        prof = raw_input("Enter the professor's name:\n")
                     else:
                         print("Command not recognized")
                 row = result.fetchone()
@@ -239,75 +250,153 @@ def courses(own, viewing):
         return
 
 
+# TODO
 def study_abroad(own, viewing):
-    print("study_abroad")
-
-
-def research(own, viewing):
-    print("---------------Co-ops-----------------")
-    # Add a co-op
+    print("---------------Study Abroad-----------------")
+    # Add a study abroad
     if own == viewing:
         while True:
-            add_co_op = raw_input("Add a co-op (y/n):\n")
-            if add_co_op == 'n':
+            add_study_abroad = raw_input("Add a Study Abroad Experience? (y/n):\n")
+            if add_study_abroad == 'n':
                 break
-            elif add_co_op == 'y':
+            elif add_study_abroad == 'y':
                 start = raw_input("Enter a start date yyyy-mm-dd:\n")
                 end = raw_input("Enter an end date yyyy-mm-dd:\n")
-                comp = raw_input("Enter a company:\n")
-                about = raw_input("Enter a descrpition of the co-op")
-                cursor.callproc("add_co_op", [viewing, start, end, comp, about])
+                uni = raw_input("Enter the University:\n")
+                loc = raw_input("Enter the country:\n")
+                cursor.callproc("add_study_abroad", [viewing, start, end, uni, loc])
                 cnx.commit()
             else:
                 print("Valid options are y or n")
     # Go through all co-ops
-    print("-----------Viewing Co-ops------------")
-    cursor.callproc("get_co_ops", [viewing])
+    print("-----------Viewing Study Abroad------------")
+    cursor.callproc("get_study_abroad", [viewing])
     for result in cursor.stored_results():
         row = result.fetchone()
         if row is None:
-            print("There are no co-ops for " + viewing + ".")
+            print("There are no study abroad experiences for " + viewing + ".")
             return
         while row is not None:
-            print("----------------CO-OP------------------")
+            print("----------------Study Abroad------------------")
             print("start: " + util.xstr(row[0]) + "\nend: " + util.xstr(row[1])
-                  + "\ncompany: " + util.xstr(row[2]) + "\ndescription: " + util.xstr(row[3]))
+                  + "\nuniversity: " + util.xstr(row[2]) + "\ncountry: " + util.xstr(row[3]))
 
             # Change a co-op if own account
             if own == viewing:
-                print("You can edit this co-op with the name of the field multiple fields can be changed,"
+                print("You can edit this study abroad with the name of the field multiple fields can be changed,"
                       " 'delete' it, go to the next co-op with 'next', or go 'back'")
                 old_time = row[0]
+                start = row[0]
+                end = row[1]
+                uni = row[2]
+                loc = row[3]
                 changed = False
                 while True:
                     option = raw_input("Enter a command")
                     if (option == 'back') or (option == 'next'):
                         if changed:
-                            cursor.callproc("del_co_op", [viewing, old_time])
+                            cursor.callproc("del_study_abroad", [viewing, old_time])
                             cnx.commit()
-                            cursor.callproc("add_co_op", [viewing, row[0], row[1], row[2], row[3]])
+                            cursor.callproc("add_study_abroad", [viewing, start, end, uni, loc])
                             cnx.commit()
                         if option == 'back':
                             return
                         break
                     elif option == 'delete':
-                        cursor.callproc("del_co_op", [viewing, row[0]])
+                        cursor.callproc("del_study_abroad", [viewing, old_time])
                         cnx.commit()
                         break
                     elif option == 'start':
                         changed = True
-                        row[0] = raw_input("Enter the new start date yyyy-mm-dd:\n")
+                        start = raw_input("Enter the new start date yyyy-mm-dd:\n")
                     elif option == 'end':
                         changed = True
-                        row[1] = raw_input("Enter the new end date yyyy-mm-dd:\n")
-                    elif option == "company":
+                        end = raw_input("Enter the new end date yyyy-mm-dd:\n")
+                    elif option == "university":
                         changed = True
-                        row[2] = raw_input("Enter the company name:\n")
-                    elif option == "dectription":
+                        uni = raw_input("Enter the University:\n")
+                    elif option == "country":
                         changed = True
-                        row[3] = raw_input("Enter the description:\n")
+                        loc = raw_input("Enter the country:\n")
                     else:
                         print("Command not recognized")
                 row = result.fetchone()
-        print("There are no other Co-ops")
+        print("There are no other Study Abroad experiences.")
         return
+
+
+def research(own, viewing):
+    print("---------------Research Experience-----------------")
+    # Add a research
+    if own == viewing:
+        while True:
+            add_research = raw_input("Add a Research Experience (y/n):\n")
+            if add_research == 'n':
+                break
+            elif add_research == 'y':
+                start = raw_input("Enter a start date yyyy-mm-dd:\n")
+                end = raw_input("Enter an end date yyyy-mm-dd:\n")
+                prof = raw_input("Enter a professor:\n")
+                about = raw_input("Enter a description of the research:\n")
+                cursor.callproc("add_research", [viewing, start, end, prof, about])
+                cnx.commit()
+            else:
+                print("Valid options are y or n")
+    # Go through all co-ops
+    print("-----------Viewing Research------------")
+    cursor.callproc("get_research", [viewing])
+    for result in cursor.stored_results():
+        row = result.fetchone()
+        if row is None:
+            print("There are no research experiences for " + viewing + ".")
+            return
+        while row is not None:
+            print("----------------Research------------------")
+            print("start: " + util.xstr(row[0]) + "\nend: " + util.xstr(row[1])
+                  + "\nprofessor: " + util.xstr(row[2]) + "\ndescription: " + util.xstr(row[3]))
+
+            # Change a co-op if own account
+            if own == viewing:
+                print("You can edit this research with the name of the field multiple fields can be changed,"
+                      " 'delete' it, go to the next co-op with 'next', or go 'back'")
+                old_time = row[0]
+                start = row[0]
+                end = row[1]
+                prof = row[2]
+                desc = row[3]
+                changed = False
+                while True:
+                    option = raw_input("Enter a command")
+                    if (option == 'back') or (option == 'next'):
+                        if changed:
+                            cursor.callproc("del_research", [viewing, old_time])
+                            cnx.commit()
+                            cursor.callproc("add_research", [viewing, start, end, prof, desc])
+                            cnx.commit()
+                        if option == 'back':
+                            return
+                        break
+                    elif option == 'delete':
+                        cursor.callproc("del_research", [viewing, row[0]])
+                        cnx.commit()
+                        break
+                    elif option == 'start':
+                        changed = True
+                        start = raw_input("Enter the new start date yyyy-mm-dd:\n")
+                    elif option == 'end':
+                        changed = True
+                        end = raw_input("Enter the new end date yyyy-mm-dd:\n")
+                    elif option == "professor":
+                        changed = True
+                        prof = raw_input("Enter the professor's name:\n")
+                    elif option == "dectription":
+                        changed = True
+                        desc = raw_input("Enter the description:\n")
+                    else:
+                        print("Command not recognized")
+                row = result.fetchone()
+        print("There are no other Research experiences.")
+        return
+
+
+#TODO majors and minors

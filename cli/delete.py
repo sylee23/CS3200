@@ -5,6 +5,7 @@ import login
 cnx = MySQLConnection(user='project', password='project', database='project')
 cursor = cnx.cursor()
 
+
 # delete account and all info related to it
 def delete_account(user):
     print("-----------------------------------------------")

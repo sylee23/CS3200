@@ -3,6 +3,7 @@ import login
 import delete
 import viewProfile
 
+
 # Landing Page
 def landing(user):
     print("------------------Home------------------")
@@ -15,7 +16,7 @@ def landing(user):
         if option == "search-users":
             search.search_users(user)
         elif option == "profile":
-            return view_own_profile(user)
+            return viewProfile.view_profile(user, user)
         elif option == "delete-account":
             return delete.delete_account(user)
         elif option == "logout":
