@@ -35,3 +35,7 @@ def search_users(user):
             viewProfile.view_profile(user, split[1])
         else:
             print("Command not recognized")
+
+def search_groups(user):
+    print("Search groups")
+    return home.landing(user)
