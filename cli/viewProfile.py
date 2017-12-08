@@ -89,7 +89,7 @@ def co_ops(own, viewing):
                 end = raw_input("Enter an end date yyyy-mm-dd:\n")
                 comp = raw_input("Enter a company:\n")
                 about = raw_input("Enter a descrpition of the co-op")
-                cursor.callproc("add_co_op", [start, end, comp, about])
+                cursor.callproc("add_co_op", [viewing, start, end, comp, about])
                 cnx.commit()
             else:
                 print("Valid options are y or n")
@@ -147,7 +147,68 @@ def co_ops(own, viewing):
 
 
 def courses(own, viewing):
-    print("courses")
+    print("---------------Courses-----------------")
+    # Add a course
+    if own == viewing:
+        while True:
+            add_course = raw_input("Add a course? (y/n):\n")
+            if add_course == 'n':
+                break
+            elif add_course == 'y':
+                sem = raw_input("Enter a semester start date yyyy-mm-dd:\n")
+                title = raw_input("Enter a course name:\n")
+                prof = raw_input("Enter a professor's name:\n")
+                cursor.callproc("add_co_op", [viewing, title, sem, prof])
+                cnx.commit()
+            else:
+                print("Valid options are y or n")
+    # Go through all courses
+    print("-----------Viewing Courses------------")
+    cursor.callproc("get_courses", [viewing])
+    for result in cursor.stored_results():
+        row = result.fetchone()
+        if row is None:
+            print("There are no courses for " + viewing + ".")
+            return
+        while row is not None:
+            print("----------------Course------------------")
+            print("course-name: " + util.xstr(row[1]) + "\nprofessor: " + util.xstr(row[2])
+                  + "\nsemester: " + util.xstr(row[3]))
+
+            # Change a course if own account
+            if own == viewing:
+                print("You can edit this course with the name of the field multiple fields can be changed,"
+                      " 'delete' it, go to the next course with 'next', or go 'back'")
+                changed = False
+                while True:
+                    option = raw_input("Enter a command")
+                    if (option == 'back') or (option == 'next'):
+                        if changed:
+                            cursor.callproc("del_course", [row[0]])
+                            cnx.commit()
+                            cursor.callproc("add_course", [viewing, row[1], row[3], row[2]])
+                            cnx.commit()
+                        if option == 'back':
+                            return
+                        break
+                    elif option == 'delete':
+                        cursor.callproc("del_course", [row[0]])
+                        cnx.commit()
+                        break
+                    elif option == 'semester':
+                        changed = True
+                        row[3] = raw_input("Enter the new semester start date yyyy-mm-dd:\n")
+                    elif option == "course-name":
+                        changed = True
+                        row[1] = raw_input("Enter the course name:\n")
+                    elif option == "professor":
+                        changed = True
+                        row[3] = raw_input("Enter the proffessor's name:\n")
+                    else:
+                        print("Command not recognized")
+                row = result.fetchone()
+        print("There are no other courses")
+        return
 
 
 def study_abroad(own, viewing):
