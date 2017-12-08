@@ -6,7 +6,7 @@ import connections
 import groups
 
 
-# Landing Page
+# Landing Page all things come back to here, other than logging out/deleting account
 def landing(user):
     print("------------------Home------------------")
     print("Options\n1.Search Users\n2. View/Edit Profile\n3. View/Remove Connections\n"
@@ -16,7 +16,7 @@ def landing(user):
         if option == "1":
             search.search_users(user)
         elif option == "2":
-            return viewProfile.view_profile(user, user)
+            viewProfile.view_profile(user, user)
         elif option == "3":
             connections.main(user)
         elif option == "4":
@@ -29,5 +29,4 @@ def landing(user):
         elif option == "7":
             return delete.delete_account(user)
         else:
-            print("Command not recognized. Valid commands are: search-users,"
-                  + " profile, delete-account, logout")
+            print("Command not recognized. Enter a number from 1-7")

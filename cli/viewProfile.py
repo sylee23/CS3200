@@ -6,7 +6,7 @@ cnx = MySQLConnection(user='project', password='project', database='project')
 cursor = cnx.cursor()
 
 
-# View a profile
+# View a profile go back to where were previously
 def view_profile(own, viewing):
     if own == viewing:
         print("-------------------Welcome to your Profile-----------------")
@@ -29,7 +29,7 @@ def view_profile(own, viewing):
         elif option == '6':
             majors_and_minors(own, viewing)
         elif option == 'back':
-            return home.landing(own)
+            return
         else:
             print("not a valid command")
 
@@ -401,7 +401,6 @@ def research(own, viewing):
         return
 
 
-# TODO majors and minors
 def majors_and_minors(own, viewing):
     print("Add majors or Minors.")
     if own == viewing:

@@ -1,5 +1,4 @@
 from mysql.connector import MySQLConnection, Error
-import home
 import viewProfile
 
 cnx = MySQLConnection(user='project', password='project', database='project')
@@ -28,7 +27,7 @@ def search_users(user):
                            + "search again with 'search-users', or go back to home with 'home'\n")
         split = option.split(" ", 1)
         if option == "home":
-            return home.landing(user)
+            return
         elif option == "search-users":
             return search_users(user)
         elif split[0] == "view-user":
@@ -38,4 +37,4 @@ def search_users(user):
 
 def search_groups(user):
     print("Search groups")
-    return home.landing(user)
+    return
