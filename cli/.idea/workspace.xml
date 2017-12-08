@@ -18,14 +18,14 @@
         <entry file="file://$PROJECT_DIR$/viewProfile.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="824">
-              <caret line="401" column="23" lean-forward="true" selection-start-line="401" selection-start-column="23" selection-end-line="401" selection-end-column="23" />
+              <caret line="480" column="14" lean-forward="false" selection-start-line="480" selection-start-column="14" selection-end-line="480" selection-end-column="14" />
               <folding>
                 <element signature="e#0#50#0" expanded="true" />
-                <marker date="1512712963280" expanded="true" signature="3671:3718" ph="UPDATE users... " />
-                <marker date="1512712963280" expanded="true" signature="3822:3871" ph="UPDATE users... " />
-                <marker date="1512712963280" expanded="true" signature="3982:4028" ph="UPDATE users... " />
-                <marker date="1512712963280" expanded="true" signature="4126:4169" ph="UPDATE users... " />
-                <marker date="1512712963280" expanded="true" signature="4267:4310" ph="UPDATE users... " />
+                <marker date="1512715753970" expanded="true" signature="3795:3842" ph="UPDATE users... " />
+                <marker date="1512715753970" expanded="true" signature="3946:3995" ph="UPDATE users... " />
+                <marker date="1512715753970" expanded="true" signature="4106:4152" ph="UPDATE users... " />
+                <marker date="1512715753970" expanded="true" signature="4250:4293" ph="UPDATE users... " />
+                <marker date="1512715753970" expanded="true" signature="4391:4434" ph="UPDATE users... " />
               </folding>
             </state>
           </provider>
@@ -214,32 +214,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/login.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="6" lean-forward="false" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
-          <folding>
-            <element signature="e#0#50#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/search.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
-            <element signature="e#0#50#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/home.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="16" lean-forward="false" selection-start-line="26" selection-start-column="16" selection-end-line="26" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#50#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -249,7 +229,7 @@
         <state relative-caret-position="119">
           <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
-            <element signature="e#0#50#0" expanded="true" />
+            <element signature="e#0#50#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -270,17 +250,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/home.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="16" lean-forward="false" selection-start-line="26" selection-start-column="16" selection-end-line="26" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/login.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="20" column="6" lean-forward="false" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#50#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/viewProfile.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="824">
-          <caret line="401" column="23" lean-forward="true" selection-start-line="401" selection-start-column="23" selection-end-line="401" selection-end-column="23" />
+          <caret line="480" column="14" lean-forward="false" selection-start-line="480" selection-start-column="14" selection-end-line="480" selection-end-column="14" />
           <folding>
             <element signature="e#0#50#0" expanded="true" />
-            <marker date="1512712963280" expanded="true" signature="3671:3718" ph="UPDATE users... " />
-            <marker date="1512712963280" expanded="true" signature="3822:3871" ph="UPDATE users... " />
-            <marker date="1512712963280" expanded="true" signature="3982:4028" ph="UPDATE users... " />
-            <marker date="1512712963280" expanded="true" signature="4126:4169" ph="UPDATE users... " />
-            <marker date="1512712963280" expanded="true" signature="4267:4310" ph="UPDATE users... " />
+            <marker date="1512715753970" expanded="true" signature="3795:3842" ph="UPDATE users... " />
+            <marker date="1512715753970" expanded="true" signature="3946:3995" ph="UPDATE users... " />
+            <marker date="1512715753970" expanded="true" signature="4106:4152" ph="UPDATE users... " />
+            <marker date="1512715753970" expanded="true" signature="4250:4293" ph="UPDATE users... " />
+            <marker date="1512715753970" expanded="true" signature="4391:4434" ph="UPDATE users... " />
           </folding>
         </state>
       </provider>

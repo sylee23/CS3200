@@ -1,5 +1,6 @@
 from mysql.connector import MySQLConnection, Error
 import util
+import home
 
 cnx = MySQLConnection(user='project', password='project', database='project')
 cursor = cnx.cursor()
@@ -12,7 +13,7 @@ def view_profile(own, viewing):
     else:
         print("--------------Veiwing the profile of " + viewing + "---------------")
     while True:
-        print("Options: \n1. Main profile\n2. Co-ops\n3. Courses\n4. Study Abroad\n5. Research")
+        print("Options: \n1. Main profile\n2. Co-ops\n3. Courses\n4. Study Abroad\n5. Research\n6. Majors and Minors")
         print("Go back with: back")
         option = raw_input("Enter a number:\n")
         if option == '1':
@@ -25,8 +26,10 @@ def view_profile(own, viewing):
             study_abroad(own, viewing)
         elif option == '5':
             research(own, viewing)
+        elif option == '6':
+            majors_and_minors(own, viewing)
         elif option == 'back':
-            return
+            return home.landing(own)
         else:
             print("not a valid command")
 
@@ -177,7 +180,7 @@ def co_ops(own, viewing):
                         desc = raw_input("Enter the description:\n")
                     else:
                         print("Command not recognized")
-                row = result.fetchone()
+            row = result.fetchone()
         print("There are no other Co-ops")
         return
 
@@ -245,12 +248,11 @@ def courses(own, viewing):
                         prof = raw_input("Enter the professor's name:\n")
                     else:
                         print("Command not recognized")
-                row = result.fetchone()
+            row = result.fetchone()
         print("There are no other courses")
         return
 
 
-# TODO
 def study_abroad(own, viewing):
     print("---------------Study Abroad-----------------")
     # Add a study abroad
@@ -320,7 +322,7 @@ def study_abroad(own, viewing):
                         loc = raw_input("Enter the country:\n")
                     else:
                         print("Command not recognized")
-                row = result.fetchone()
+            row = result.fetchone()
         print("There are no other Study Abroad experiences.")
         return
 
@@ -394,9 +396,86 @@ def research(own, viewing):
                         desc = raw_input("Enter the description:\n")
                     else:
                         print("Command not recognized")
-                row = result.fetchone()
+            row = result.fetchone()
         print("There are no other Research experiences.")
         return
 
 
-#TODO majors and minors
+# TODO majors and minors
+def majors_and_minors(own, viewing):
+    print("Add majors or Minors.")
+    if own == viewing:
+        while True:
+            add_m = raw_input("Select:\n1. Add a Major\n2. Add a Minor\n3. View Majors/Minors\n4.Back\n")
+            if add_m == '3':
+                break
+            elif add_m =='4':
+                return
+            elif add_m == '1':
+                major = raw_input('Enter the name of the major:\n')
+                cursor.callproc("add_major", [viewing, major])
+                cnx.commit()
+            elif add_m == '2':
+                minor = raw_input('Enter the name of the minor:\n')
+                cursor.callproc("add_minor", [viewing, minor])
+                cnx.commit()
+            else:
+                print("Valid options are 1, 2, 3, 4")
+    # Go through all Majors
+    print("-----------Viewing Majors------------")
+    cursor.callproc("get_major", [viewing])
+    for result in cursor.stored_results():
+        row = result.fetchone()
+        if row is None:
+            print("There are no majors for " + viewing + ".")
+            return
+        while row is not None:
+            print(util.xstr(row[0]))
+            # Delete major if own account
+            if own == viewing:
+                print("You can delete this major with 'delete', go to the 'next' major, or "
+                      " 'delete' it, go to the next co-op with 'next', or go 'back'")
+                while True:
+                    option = raw_input("Enter a command")
+                    if option == 'back':
+                        return
+                    if option == 'next':
+                        break
+                    elif option == 'delete':
+                        cursor.callproc("del_major", [viewing, row[0]])
+                        cnx.commit()
+                        break
+                    else:
+                        print("Command not recognized")
+            row = result.fetchone()
+        print("There are no other majors")
+        break
+    # Go through all Minors
+    print("-----------Viewing Minors------------")
+    cursor.callproc("get_minors", [viewing])
+    for result in cursor.stored_results():
+        row = result.fetchone()
+        if row is None:
+            print("There are no minors for " + viewing + ".")
+            return
+        while row is not None:
+            print(util.xstr(row[0]))
+            # Delete major if own account
+            if own == viewing:
+                print("You can delete this mino with 'delete', go to the 'next' major, or "
+                      " 'delete' it, go to the next co-op with 'next', or go 'back'")
+                while True:
+                    option = raw_input("Enter a command")
+                    if option == 'back':
+                        return
+                    if option == 'next':
+                        break
+                    elif option == 'delete':
+                        cursor.callproc("del_minor", [viewing, row[0]])
+                        cnx.commit()
+                        break
+                    else:
+                        print("Command not recognized")
+            row = result.fetchone()
+        print("There are no other minors")
+        return
