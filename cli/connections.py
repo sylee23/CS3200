@@ -18,7 +18,7 @@ def main(user):
             print("------------------------------------------------")
             break
     print("To remove a user from your connections enter remove and their user name"
-          "Like remove user. Go back with 'back'")
+          "\nLike: remove username. Go back with 'back'")
     while True:
         option = raw_input("Enter a command:\n")
         split = option.split(" ", 1)
@@ -27,4 +27,3 @@ def main(user):
         elif split[0] == 'remove':
             cursor.callproc("drop_connection", [user, split[1]])
             cnx.commit()
-

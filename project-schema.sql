@@ -42,7 +42,6 @@ CREATE TABLE `co_ops` (
 
 LOCK TABLES `co_ops` WRITE;
 /*!40000 ALTER TABLE `co_ops` DISABLE KEYS */;
-INSERT INTO `co_ops` VALUES ('2013-03-22','2013-05-23','user1','Best company','It was a god experience'),('2034-02-02','2012-09-02','1','sd','dfs');
 /*!40000 ALTER TABLE `co_ops` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +97,6 @@ CREATE TABLE `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
-INSERT INTO `course` VALUES (1,'gd','df','2013-03-03','1');
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +187,7 @@ CREATE TABLE `groups` (
   `description` text,
   `picture` blob,
   PRIMARY KEY (`idgroup`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,6 +196,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
+INSERT INTO `groups` VALUES (1,'hello','darkness my old friend',NULL),(4,'hello','goodbye',NULL),(5,'hi','bye',NULL),(6,'hi','bye',NULL);
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -438,7 +437,7 @@ group_id int
 )
 BEGIN
 
-INSERT INTO gorup_admin (group_idgroup, user_username)
+INSERT INTO group_admin (group_idgroup, user_username)
 VALUES (group_id, user_id);
 
 END ;;
@@ -1116,7 +1115,7 @@ user_id varchar(30)
 )
 BEGIN
 
-SELECT groups.group_id, groups.gname, groups.description
+SELECT groups.idgroup, groups.gname, groups.description
 FROM group_users join groups on (groups.idgroup = group_users.group_idgroup) 
 WHERE user_id = group_users.user_username;
 
@@ -1262,7 +1261,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `group_from_id`( group_id int)
 begin
 
-select gname, description from groups
+select idgroup, gname, description from groups
 where idgroup = group_id;
 
 
@@ -1288,8 +1287,8 @@ group_id int
 )
 BEGIN
 
-INSERT INTO connections (group_idgroup, user_username)
-VALUES (user_id, group_id);
+INSERT INTO group_users (group_idgroup, user_username)
+VALUES (group_id, user_id);
 
 END ;;
 DELIMITER ;
@@ -1366,7 +1365,7 @@ BEGIN
 
 INSERT INTO groups (gname, description)
 VALUES (group_name, about);
-select Last_Insert_ID() into group_id from groups;
+set group_id = Last_Insert_ID();
 
 END ;;
 DELIMITER ;
@@ -1425,7 +1424,7 @@ DELETE FROM group_admin
 WHERE user_id = user_username AND group_id = group_idgroup;
 
 -- There must always be an admin in a group check if no more admins
-IF ((SELECT count(*) FROM goup_admin WHERE group_id = group_idgroup) = 0)
+IF ((SELECT count(*) FROM group_admin WHERE group_id = group_idgroup) = 0)
 	-- If there are no members in group delete it
     THEN IF ((SELECT count(*) FROM group_users WHERE group_id = group_idgroup) = 0)
 			THEN DELETE FROM groups where idgroup = group_id;
@@ -1456,7 +1455,7 @@ tag varchar(45)
 BEGIN
 
 SELECT *
-FROM groups g JOIN tag_gorup  t ON (g.idgroup = t.group_idgroup)
+FROM groups g JOIN tag_group  t ON (g.idgroup = t.group_idgroup)
 WHERE t.name LIKE concat("%", tag, "%")
 ORDER BY t.name / tag;
 
@@ -1507,7 +1506,7 @@ user_id varchar(30)
 )
 BEGIN
 
-SELECT g.idgoup, g.gname, g.description
+SELECT g.idgroup, g.gname, g.description
 FROM (SELECT connected FROM connections WHERE user_id = owner) AS c
 JOIN group_users gu ON (gu.user_username = c.connected)
 JOIN groups g ON (gu.group_idgroup = g.idgroup)
@@ -1539,7 +1538,7 @@ BEGIN
  
  UPDATE groups
  SET gname = gr_name, description = about
- WHERE idgroup = griup_id;
+ WHERE idgroup = group_id;
  
  END ;;
 DELIMITER ;
@@ -1638,4 +1637,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-08 18:26:13
+-- Dump completed on 2017-12-08 21:05:41

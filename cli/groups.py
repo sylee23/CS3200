@@ -14,7 +14,7 @@ def view_groups(user):
             print("You are not a member of any groups")
         else:
             while row is not None:
-                print("group-id: " + row[0])
+                print("group-id: " + xstr(row[0]))
                 print("group-name: " + row[1])
                 print("Description: " + row[2])
                 print("---------------------------------------------------")
@@ -45,10 +45,12 @@ def create_group(user):
     result_args = cursor.callproc("new_group", [name, about, -1])
     cnx.commit()
     cursor.callproc("add_admin", [user, result_args[2]])
+    print("||||||||||||||||||||||||||||||||||||||||||")
     cursor.callproc("join_group", [user, result_args[2]])
     cnx.commit()
     print("Your are now an admin/member of the newly created group")
     return
+
 
 def view_specific_group(user, group):
     print("-----------------Viewing Group with group-id: " + group + "---------------")
@@ -56,15 +58,16 @@ def view_specific_group(user, group):
     for result in cursor.stored_results():
         row = result.fetchone()
         if row is None:
-            print("You are not a member of any groups")
+            print("Group does not exist")
+            return
         else:
-                print("group-id: " + row[0])
+                print("group-id: " + xstr(row[0]))
                 print("group-name: " + row[1])
                 print("Description: " + row[2])
                 print("---------------------------------------------------")
                 break
     admin_args = cursor.callproc("check_admin", [user, group, False])
-    joined_args = cursor.callproc("check_joined", [user, group, False])
+    joined_args = cursor.callproc("check_member", [user, group, False])
     if admin_args[2]:
         while True:
             admin_mode = raw_input("Enter admin mode for group (y/n)\n")
@@ -85,6 +88,8 @@ def view_specific_group(user, group):
             elif options == '3':
                 print("You have left the group")
                 cursor.callproc("leave_group", [user, group])
+                cnx.commit()
+                return
     else:
         while True:
             is_joining = raw_input("Would you like to join this group? (y/n):\n")
@@ -140,7 +145,7 @@ def get_group_members(group):
             return
         else:
             while row is not None:
-                print("Username: " + row[0] + "Name: " + row[1] + ", email: " + row[2])
+                print("Username: " + row[0] + ", Name: " + row[1] + ", email: " + row[2])
                 row = result.fetchone()
             print("There are no more members")
             print("------------------------------------------------")
@@ -150,17 +155,21 @@ def get_group_members(group):
 def admin_group_page(user, group):
     print("---------------Admin Page for" + group + "---------------------")
     while True:
-        option = raw_input("Options:\n1. Step down as admin\n2.Add admin\n3.Edit group information\n4. Back")
+        option = raw_input("Options:\n1. Step down as admin\n2.Add admin\n"
+                           + "3.Edit group information\n4. Back\n")
         if option == '4':
             return
-        if option == '3':
+        elif option == '1':
             cursor.callproc("rm_admin", [user, group])
             cnx.commit()
             return
-        if option == '2':
-            new_admin = raw_input("Enter the username of the new admin")
-            cursor.callproc("add_admin", [new_admin, group])
-        if option == '1':
+        elif option == '2':
+            try:
+                new_admin = raw_input("Enter the username of the new admin")
+                cursor.callproc("add_admin", [new_admin, group])
+            except Error:
+                print("Username invalid")
+        elif option == '3':
             name = raw_input("Enter the new name for the group")
             desc = raw_input("Enter the new description for the group")
             cursor.callproc("update_group", [group, name, desc])
