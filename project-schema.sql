@@ -1,3 +1,6 @@
+-- Additional inserts of data into the data base are included at the bottom of this file
+
+
 CREATE DATABASE  IF NOT EXISTS `project` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `project`;
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
@@ -1638,3 +1641,40 @@ DELIMITER ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2017-12-08 21:05:41
+
+-- Additional inserts of data into the data base
+insert into users(username, password, real_name, Descriptopn, gradYear, email, phone) values
+('username', 'password', 'Test Name', 'Hello', 2014, 'hello@mail.com', '344-324-2342'),
+('user2', 'password', 'Test Name', 'Hello', 2014, 'hello@mail.com', '344-324-2342');
+
+insert into co_ops(start, end, user_username, company, description) values
+('2013-12-23', '2015-06-09', 'username', 'company name', 'description');
+
+insert into connections(owner, connected) values ('username', 'user2');
+
+insert into course (idcourse, course_name, professor, semester, user_username) values
+(50, 'CS3200', 'Ph.D.', '2017-09-04', 'username');
+
+
+insert into groups(idgroup, gname, description) values
+(50, 'group name', 'this is a group');
+
+insert into group_admin(group_idgroup, user_username) values
+(50, 'username');
+
+insert into group_users(group_idgroup, user_username) values
+(50, 'username');
+
+insert into major(study, user_username) values ('CS', 'username');
+
+insert into minor(study, user_username) values ('English', 'username');
+
+insert into research(start_date, end_date, professor, descrisption, user_username)
+values ('2034-04-05', '2034-04-06', 'A professor', 'Was very productive', 'username');
+
+insert into study_abroad(country, start_date, end_date, university, user_username)
+values ('USA', '2054-10-08', '2043-11-11', 'U', 'username');
+
+insert into tag_group(name, group_idgroup) values ('fake', 50);
+
+insert into tag_user(name, user_username)  values('fake', 'username');
